@@ -47,7 +47,7 @@ namespace Client
                                     string testo = Console.ReadLine();
                                     if (testo == null)
                                     {
-                                        break;
+                                      break;
                                     }
 
                                     writer.WriteLine(testo);
