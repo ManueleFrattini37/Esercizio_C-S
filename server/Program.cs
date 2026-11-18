@@ -24,11 +24,11 @@ namespace Server
                 // Bloccante: attende che un client si connetta
                 using (TcpClient client = listener.AcceptTcpClient())
                 {
-                    Thread thread = new Thread(EseguiLavoro);
+                    Thread thread = new Thread(DoWork);
                     thread.Start();
 
                     Console.WriteLine("Thread pincipale in esecuzione...");
-                    
+
                     Console.WriteLine("Client connesso: " + client.Client.RemoteEndPoint);
 
                     using (NetworkStream stream = client.GetStream())
@@ -62,7 +62,7 @@ namespace Server
             }
         }
 
-        static void EseguiLavoro()
+        static void DoWork()
         {
             System.Console.WriteLine("Sono il thread che si occuperà di eseguire il lavor");
         }
