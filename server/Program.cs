@@ -11,7 +11,6 @@ namespace Server
     // Server TCP minimale: accetta un client alla volta e risponde a ogni messaggio.
     class Program
     {
-        TcpClient client;
         const int PORTA = 5000;
 
         static void Main(string[] args)
@@ -31,34 +30,36 @@ namespace Server
 
                     Thread thread = new Thread(() => DoWork(client));
                     thread.Start();
-
-
+                    thread.Join();
                     Console.WriteLine("Client disconnesso.");
                 }
             }
         }
 
-        public void DoWork(TcpClient client)
+        static void DoWork(TcpClient client)
         {
-            using (NetworkStream stream = client.GetStream())
+            using(client)
             {
-                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                using (NetworkStream stream = client.GetStream())
                 {
-                    using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
+                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
                     {
-                        writer.AutoFlush = true;
-
-                        string messaggio;
-                        // ReadLine restituisce null quando il client chiude la connessione
-                        while ((messaggio = reader.ReadLine()) != null)
+                        using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
                         {
-                            Console.WriteLine("Il messaggio è lungo  " + messaggio.Length + " caratteri.");
-                            Console.WriteLine("Ricevuto: " + messaggio);
-                            writer.WriteLine("ECO: " + messaggio);
+                            writer.AutoFlush = true;
 
-                            if (messaggio.ToUpper() == "FINE")
-                                break;
+                            string messaggio;
+                            // ReadLine restituisce null quando il client chiude la connessione
+                            while ((messaggio = reader.ReadLine()) != null)
+                            {
+                                Console.WriteLine("Il messaggio è lungo  " + messaggio.Length + " caratteri.");
+                                Console.WriteLine("Ricevuto: " + messaggio);
+                                writer.WriteLine("ECO: " + messaggio);
 
+                                if (messaggio.ToUpper() == "FINE")
+                                    break;
+
+                            }
                         }
                     }
                 }
