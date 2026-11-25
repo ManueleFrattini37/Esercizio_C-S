@@ -11,6 +11,7 @@ namespace Server
     // Server TCP minimale: accetta un client alla volta e risponde a ogni messaggio.
     class Program
     {
+        TcpClient client;
         const int PORTA = 5000;
 
         static void Main(string[] args)
@@ -28,7 +29,7 @@ namespace Server
                     Console.WriteLine("Thread pincipale in esecuzione...");
                     Console.WriteLine("Client connesso: " + client.Client.RemoteEndPoint);
 
-                    Thread thread = new Thread(DoWork);
+                    Thread thread = new Thread(() => DoWork(client));
                     thread.Start();
 
 
@@ -37,7 +38,7 @@ namespace Server
             }
         }
 
-        public void DoWork(TcpClientclient)
+        public void DoWork(TcpClient client)
         {
             using (NetworkStream stream = client.GetStream())
             {
