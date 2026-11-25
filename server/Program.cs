@@ -24,38 +24,13 @@ namespace Server
                 // Bloccante: attende che un client si connetta
                 using (TcpClient client = listener.AcceptTcpClient())
                 {
+
+                    Console.WriteLine("Thread pincipale in esecuzione...");
+                    Console.WriteLine("Client connesso: " + client.Client.RemoteEndPoint);
+
                     Thread thread = new Thread(DoWork);
                     thread.Start();
 
-                    Console.WriteLine("Thread pincipale in esecuzione...");
-
-                    Console.WriteLine("Client connesso: " + client.Client.RemoteEndPoint);
-
-                    using (NetworkStream stream = client.GetStream())
-                    {
-                        using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                        {
-                            using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
-                            {
-                                writer.AutoFlush = true;
-
-                                string messaggio;
-                                // ReadLine restituisce null quando il client chiude la connessione
-                                while ((messaggio = reader.ReadLine()) != null)
-                                {
-                                    Console.WriteLine("Il messaggio è lungo  " + messaggio.Length + " caratteri.");
-                                    Console.WriteLine("Ricevuto: " + messaggio);
-                                    writer.WriteLine("ECO: " + messaggio);
-
-                                    if (messaggio.ToUpper() == "FINE")
-                                    {
-                                        break;
-                                    }
-
-                                }
-                            }
-                        }
-                    }
 
                     Console.WriteLine("Client disconnesso.");
                 }
@@ -81,9 +56,7 @@ namespace Server
                             writer.WriteLine("ECO: " + messaggio);
 
                             if (messaggio.ToUpper() == "FINE")
-                            {
                                 break;
-                            }
 
                         }
                     }
